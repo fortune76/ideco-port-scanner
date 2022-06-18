@@ -7,12 +7,9 @@ async def handle(request):
     """
     Обработчик требуемого урла
     """
-    try:
-        logger.info('Incoming request')
-        return web.json_response(get_data(request))
-    except Exception:
-        logger.error('Request error')
-        return web.json_response({'Error': 'Request_error'})
+    logger.info(f'Incoming request {request}')
+    data_to_return = web.json_response(get_data(request))
+    return data_to_return
 
 
 @web.middleware
@@ -32,8 +29,9 @@ async def error_middleware(request, handler):
 
 app = web.Application(middlewares=[error_middleware])
 app.add_routes([web.get('/scan/{ip}/{port_start}/{port_end}/', handle)])
+app.add_routes([web.get('/scan/{ip}/{port_start}/{port_end}', handle)])
 
 
 if __name__ == '__main__':
-    logger.info('Ideco port checker runned succeful')
+    logger.info('Ideco port checker runned succeful. Waiting for requests.')
     web.run_app(app)

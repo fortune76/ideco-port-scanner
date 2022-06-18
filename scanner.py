@@ -2,7 +2,6 @@ import socket
 import threading
 import time
 
-
 from logs import logger
 
 data = {}
@@ -23,6 +22,7 @@ def port_scanner(ip, port) -> None:
         sock.close()
     except Exception:
         update_data(port, 'close')
+        sock.close()
 
 
 def port_scanner_loop(ip: str, start_port: int, end_port: int) -> dict:
@@ -30,9 +30,9 @@ def port_scanner_loop(ip: str, start_port: int, end_port: int) -> dict:
     for i in range(start_port, end_port + 1):
         thread = threading.Thread(target=port_scanner, args=(ip, i))
         thread.start()
-    time.sleep(0.1)
+    time.sleep(0.5)
     try:
-        logger.info('Ports are checked')
+        logger.info(f'Ports are checked. Result: {data}')
         return data
     except Exception:
         logger.error('Check error')
@@ -49,7 +49,7 @@ def get_data(request):
             port_start, port_end = port_end, port_start
         logger.info(f'Checking ports by ip: {ip}')
         return port_scanner_loop(ip, port_start, port_end)
-    except TypeError('post_start, port_end must be int'):
+    except TypeError:
         return {'Error': 'post_start, port_end must be int'}
-    except ValueError('Incorrect Values'):
+    except ValueError:
         return {'Error': 'Incorrect Values'}

@@ -1,5 +1,4 @@
 from aiohttp.test_utils import AioHTTPTestCase
-from aiohttp import web
 
 import main
 from main import handle
@@ -28,6 +27,15 @@ class MyAppTestCase(AioHTTPTestCase):
             self.assertIn('{"8079": "close", "8080": "close"}', text)
         except:
             self.assertIn('{"8078": "close", "8079": "close"}', text)
+
+    async def test_real_ip(self):
+        async with self.client.request("GET", "/scan/87.240.190.78/442/443/") as resp:
+            self.assertEqual(resp.status, 200)
+            text = await resp.text()
+        try:
+            self.assertIn('{"442": "close", "443": "open"}', text)
+        except:
+            self.assertIn('{"443": "open", "442": "close"}', text)
 
     async def test_404(self):
         async with self.client.request("GET", "/scan/0.0.0.0/x/x/") as resp:
