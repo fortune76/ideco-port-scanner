@@ -11,7 +11,7 @@ virtualenv venv
 ```
 Activate venv.
 ```
-$ source venv/bin/activate
+source venv/bin/activate
 ```
 Install requirements
 ```
@@ -24,4 +24,4 @@ python3 main.py
 ```
 Logs are automatically stream to your terminal
 Type HTTP GET /scan/<ip>/<begin_port>/<end_port>/ to your browser or Postman.
-U will receive JSON response with port's status.  
+You will receive JSON response with port's status.  
