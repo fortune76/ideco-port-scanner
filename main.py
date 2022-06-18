@@ -12,22 +12,7 @@ async def handle(request):
     return data_to_return
 
 
-@web.middleware
-async def error_middleware(request, handler):
-    """
-    Отлавливание 404, если урл не корректен.
-    """
-    try:
-        response = await handler(request)
-        if response.status != 404:
-            return response
-    except web.HTTPException as ex:
-        if ex.status != 404:
-            raise
-    return web.json_response({'Error': '404 error. Use correct URL.'})
-
-
-app = web.Application(middlewares=[error_middleware])
+app = web.Application()
 app.add_routes([web.get('/scan/{ip}/{port_start}/{port_end}/', handle)])
 app.add_routes([web.get('/scan/{ip}/{port_start}/{port_end}', handle)])
 
