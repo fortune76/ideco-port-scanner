@@ -1,3 +1,7 @@
+import random
+
+from aiohttp.http_exceptions import HttpBadRequest
+
 from logs import logger
 from aiohttp import web
 from scanner import get_data
@@ -7,9 +11,12 @@ async def handle(request):
     """
     Обработчик требуемого урла
     """
-    logger.info(f'Incoming request {request}')
-    data_to_return = web.json_response(get_data(request))
-    return data_to_return
+    logger.info(f'Incoming new request')
+    data_to_return = get_data(request)
+    if 'Error' in data_to_return:
+        logger.error(f'Bad request. request: {request}.')
+        return web.json_response(data_to_return, status=401)
+    return web.json_response(data_to_return)
 
 
 app = web.Application()
